@@ -38,6 +38,10 @@ jobs:
         with:
           # Upload entire repository
           path: '.'
+          # A new name prevents duplicate artifacts when this run is retried.
+          name: github-pages-${{ github.run_attempt }}
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+        with:
+          artifact_name: github-pages-${{ github.run_attempt }}

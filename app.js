@@ -1,3 +1,4 @@
+(() => {
 'use strict';
 const $=id=>document.getElementById(id),TAU=2*Math.PI,g=9.81;
 const chapters=[
@@ -31,3 +32,4 @@ function updateMetrics(){let vals;if(page===0||page===1){let T=page===0?TAU*Math
 function manipulate(e){let r=scene.getBoundingClientRect(),a=e.clientX-r.left,b=e.clientY-r.top;if(page===0||page===2){let geo=geometry(r.width),limit=(page===2?60:20)*Math.PI/180;theta=Math.max(-limit,Math.min(limit,Math.atan2(a-geo.cx,b-geo.cy)));omega=0;p.angle=Math.max(page===2?5:2,Math.abs(theta)*180/Math.PI);$('angle').value=p.angle;$('angle-out').textContent=p.angle.toFixed(1)+' °'}else if(page===1){x=Math.max(-.3,Math.min(.3,(b-175-22)/250));velocity=0;p.amp=Math.max(.02,Math.abs(x));$('amp').value=p.amp;$('amp-out').textContent=p.amp.toFixed(2)+' m'}else if(page===3)drive=Math.max(-.9,Math.min(.9,(r.height/2-b)/95));history=[];}
 scene.onpointerdown=e=>{if(page===4)return;drag=true;scene.setPointerCapture(e.pointerId);manipulate(e)};scene.onpointermove=e=>{if(drag)manipulate(e)};scene.onpointerup=()=>{drag=false};scene.onpointercancel=()=>{drag=false};scene.onkeydown=e=>{if(!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)||page===4)return;e.preventDefault();let sign=['ArrowUp','ArrowRight'].includes(e.key)?1:-1;if(page===3){drive=Math.max(-.9,Math.min(.9,drive+sign*.15));impulse=0}else if(page===1){x=Math.max(-p.amp,Math.min(p.amp,x+sign*.03));velocity=0}else{theta=Math.max(-p.angle*Math.PI/180,Math.min(p.angle*Math.PI/180,theta+sign*.04));omega=0}history=[]};
 window.addEventListener('hashchange',()=>{let n=Number(location.hash.slice(1))-1;if(Number.isInteger(n)&&n>=0&&n<=4&&n!==page)navigate(n)});navigate(Math.max(0,Math.min(4,(Number(location.hash.slice(1))||1)-1)));updatePlay();function frame(now){let dt=Math.min((now-last)/1000,.04);last=now;if(running&&dt>0)step(dt*Number($('speed').value));draw();requestAnimationFrame(frame)}requestAnimationFrame(frame);
+})();
